@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTEVT CMLT · Semester 1 Study Site</title>
+<meta name="description" content="A personal CMLT First Year study site: exam strategy, 20-day schedule, and real study notes for all 9 shared Health Science subjects.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231c2b3a%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22%23a5822f%22 font-family=%22Georgia,serif%22>C</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('cmlt-study-prefs-v1')||'{}');if(p.theme==='dark')document.documentElement.setAttribute('data-theme','dark');if(p.fontScale)document.documentElement.style.setProperty('--font-scale',p.fontScale);}catch(e){}</script>
+</head>
+<body>
+
+<header class="mast">
+  <div class="eyebrow">Council for Technical Education &amp; Vocational Training · Certificate in Medical Laboratory Technology (CMLT)</div>
+  <h1>Semester 1 Study Site</h1>
+  <p class="sub">Starting from zero, 20 days, one goal: <strong>maximum marks</strong>. Real content for every subject — not just links — built around the shared CTEVT Health Science First Year syllabus your CMLT curriculum officially defers to.</p>
+</header>
+
+<nav class="jump" id="sitenav"></nav>
+
+<main>
+
+<div class="dashboard" id="dashboard"></div>
+
+  <section id="strategy">
+    <h2 class="section-title"><span class="no">§0</span> How To Score Max From Zero</h2>
+    <p class="lede">Nine subjects, zero background, 20 days — real mastery isn't possible, but maximizing marks is. CTEVT papers are highly patterned. Use that.</p>
+    <div class="card red">
+      <h3 style="margin-top:0;">The exam structure (learn this Day 1)</h3>
+      <p>Every CTEVT paper follows the same shape: <strong>Group A</strong> — very short answers, 1 mark each (definitions, one-word, fill-in) · <strong>Group B</strong> — short answers, 3–5 marks (short explanations) · <strong>Group C</strong> — long answers, 8–10 marks (essay-style, diagrams). Group A+B together are usually over half the total marks and are almost pure memorization.</p>
+    </div>
+    <div class="card green">
+      <h3 style="margin-top:0;">The four rules for every subject</h3>
+      <p>
+      1. <strong>Definitions and diagrams first</strong> — fastest marks, need zero deep understanding.<br>
+      2. <strong>Past papers ARE your syllabus</strong> — study what's actually been asked before the full notes.<br>
+      3. <strong>VVI question sets over full chapters</strong> — someone already did the triage.<br>
+      4. <strong>Partial understanding + a memorized model answer</strong> beats no answer, every time, in Group B/C.</p>
+    </div>
+    <div class="card gold">
+      <h3 style="margin-top:0;">Why "HA" labels show up on some sources</h3>
+      <p>CTEVT publishes one shared curriculum — "Health Science First Year All" — used by every Health Science diploma program (HA, CMLT, Radiography, Pharmacy, Dental, Ophthalmic, and others). Your own official CMLT curriculum document confirms this directly: it says <em>"See Separate Curriculum for Health Science First Year All"</em> instead of listing its own Year 1 subjects. Your CMLT-specific coursework (Microbiology, Hematology, Biochemistry, Parasitology, etc.) only starts in Year 2. So any source labeled "HA First Year" for these 9 subjects applies to you too — confirmed independently by three sources, including ctevtnote.com's own CMLT section routing to the same pages.</p>
+    </div>
+  </section>
+
+  <section id="schedule">
+    <h2 class="section-title"><span class="no">§1</span> Day-by-Day Schedule</h2>
+    <p class="lede">Weighted by difficulty, not equal days each. Tap a stamp once you've finished that day.</p>
+    <div class="table-scroll">
+    <table class="ledger-table">
+      <thead><tr><th>Day</th><th>Subject</th><th>Focus</th><th>Stamp</th></tr></thead>
+      <tbody id="schedule-body"></tbody>
+    </table>
+    </div>
+    <p class="progress-note"></p>
+  </section>
+
+  <section id="subjects">
+    <h2 class="section-title"><span class="no">§2</span> Subject Notes</h2>
+    <p class="lede">Real content for every subject — definitions, high-yield tables, and model Group B/C answers, plus verified resource links. Click a subject to start.</p>
+    <div class="subject-grid" id="subject-grid"></div>
+  </section>
+
+  <section id="extra">
+    <h2 class="section-title"><span class="no">§3</span> General &amp; Cross-Subject Resources</h2>
+    <p class="lede">Hubs that cover multiple/all 9 subjects in one place, plus the official curriculum and a video channel.</p>
+    <ul style="list-style:none; margin:0; padding:0; display:grid; gap:.7rem;" id="extra-list"></ul>
+  </section>
+
+</main>
+
+<footer>CTEVT CMLT · First Year (shared Health Science syllabus) · Semester 1 — built as a personal study reference, not an official CTEVT document.</footer>
+
+<script src="assets/app.js"></script>
+<script>
+renderNav(null, true);
+
+const SCHEDULE = [
+  {day:1, subj:"Exam-Pattern Mastery", focus:"Learn CTEVT's Group A/B/C structure. Highest-leverage day — everything after is built on it."},
+  {day:2, subj:"Anatomy &amp; Physiology", focus:"Zero-to-basics — body systems, key definitions/diagrams. See subject page."},
+  {day:3, subj:"Anatomy &amp; Physiology", focus:"Past papers — repeated Group A definitions first."},
+  {day:4, subj:"Anatomy &amp; Physiology", focus:"VVI + diagrams — Group B/C model answers."},
+  {day:5, subj:"Chemistry", focus:"Basics — definitions, important Qs. See subject page."},
+  {day:6, subj:"Chemistry", focus:"Past paper drilling — repeated reactions/definitions."},
+  {day:7, subj:"Physics", focus:"Basics — core formulas and definitions. See subject page."},
+  {day:8, subj:"Physics", focus:"Past paper drilling — numericals, formula sheet."},
+  {day:9, subj:"Botany", focus:"Diagrams + definitions — crams fast, one sitting. See subject page."},
+  {day:10, subj:"Zoology", focus:"Same approach as Botany. See subject page."},
+  {day:11, subj:"Math &amp; Statistics", focus:"Formula sheet + worked examples. See subject page."},
+  {day:12, subj:"Math &amp; Statistics", focus:"Timed past-paper numericals — repeat problem types."},
+  {day:13, subj:"English", focus:"Comprehension + grammar patterns. See subject page."},
+  {day:14, subj:"Nepali", focus:"व्याकरण basics first. See subject page."},
+  {day:15, subj:"Nepali", focus:"Past paper essay/grammar model answers."},
+  {day:16, subj:"Social Studies", focus:"Pure memorization — facts, dates. See subject page."},
+  {day:17, subj:"Second Pass — Weakest 3", focus:"Re-hit flagged-hardest subjects, past papers only."},
+  {day:18, subj:"Second Pass — Next 3", focus:"Past papers only, Group A+B focus."},
+  {day:19, subj:"Second Pass — Last 3", focus:"Clear every remaining flagged weak topic."},
+  {day:20, subj:"Mock + Final Cram", focus:"Timed mock across all 9 subjects, then final cram sheet review."},
+];
+
+const schedBody = document.getElementById('schedule-body');
+SCHEDULE.forEach(row=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="day">${String(row.day).padStart(2,'0')}</td>
+    <td class="subj">${row.subj}</td>
+    <td>${row.focus}</td>
+    <td><button class="stamp-btn" data-id="day${row.day}">Mark done</button></td>`;
+  schedBody.appendChild(tr);
+});
+
+const SUBJECTS = [
+  {href:"subjects/anatomy.html", name:"Anatomy &amp; Physiology", tag:"Core · Days 2–4", stat:"9 topics covered"},
+  {href:"subjects/chemistry.html", name:"Chemistry", tag:"Core · Days 5–6", stat:"8 topics covered"},
+  {href:"subjects/physics.html", name:"Physics", tag:"Core · Days 7–8", stat:"8 topics covered"},
+  {href:"subjects/botany.html", name:"Botany", tag:"Science · Day 9", stat:"7 topics covered"},
+  {href:"subjects/zoology.html", name:"Zoology", tag:"Science · Day 10", stat:"7 topics covered"},
+  {href:"subjects/math.html", name:"Mathematics &amp; Statistics", tag:"Core · Days 11–12", stat:"8 topics covered"},
+  {href:"subjects/english.html", name:"English", tag:"Language · Day 13", stat:"7 topics covered"},
+  {href:"subjects/nepali.html", name:"Nepali", tag:"Language · Days 14–15", stat:"6 topics covered"},
+  {href:"subjects/social.html", name:"Social Studies", tag:"General · Day 16", stat:"7 topics covered"},
+];
+document.getElementById('subject-grid').innerHTML = SUBJECTS.map(s=>`
+  <a class="subject-tile" href="${s.href}">
+    <div class="t">${s.name}</div>
+    <div class="d">${s.tag}</div>
+    <div class="stat">${s.stat}</div>
+  </a>`).join('');
+
+const EXTRAS = [
+  {name:"AK Learning Nepal — Health Science First Year hub", desc:"Verified source for Past Qs — each subject has its own page with year-by-year papers (2074–2082 BS). Hosted under an 'HA' URL, but it's the same shared First Year syllabus CMLT uses.", url:"https://aklearningnepal.com/ctevt/health-science/first-year-in-health-science/ha-first-years-in-health-science/"},
+  {name:"CTEVT official curriculum — Health Science First Year (2024)", desc:"The unit-by-unit, hour-by-hour syllabus PDF straight from CTEVT — ground truth for what examiners set questions from.", url:"https://ctevt.org.np/uploads/docs/2024-08-25_First%20Year%20all%20final%20edited%20v2.pdf"},
+  {name:"CTEVT official curriculum — CMLT (full 3-year)", desc:"Your program's own curriculum document. Confirms Year 1 is the shared document above; details your Year 2/3 specialization subjects.", url:"https://ctevt.org.np/uploads/docs/2024-07-28_CURRICULUM%20for%20CMLT.pdf"},
+  {name:"ctevtnote.com — CMLT section", desc:"This site's own CMLT hub. Its 'First Year' link routes to the same shared first-year pages used for chapter-wise notes throughout this site.", url:"https://www.ctevtnote.com/p/cmlt.html"},
+  {name:"CTEVT Midline — YouTube", desc:"Channel built for CTEVT Health Science students: notes, past questions, exam prep videos. Search “CTEVT Midline [subject] [chapter]” for topic videos.", url:"https://www.youtube.com/channel/UCh9EZ-mcLyqfZR5vJykdNEw"},
+];
+document.getElementById('extra-list').innerHTML = EXTRAS.map(e=>`
+  <li class="card" style="margin-bottom:0;">
+    <div style="font-weight:700; color:var(--navy); font-family:var(--serif); font-size:1rem;">${e.name}</div>
+    <div style="font-size:.85rem; color:var(--muted); margin:.15rem 0 .3rem;">${e.desc}</div>
+    <a href="${e.url}" target="_blank" rel="noopener" style="font-size:.85rem; word-break:break-word;">${e.url}</a>
+  </li>`).join('');
+</script>
+</body>
+</html>
