@@ -14,7 +14,7 @@
 <header class="mast">
   <div class="eyebrow">Council for Technical Education &amp; Vocational Training · Certificate in Medical Laboratory Technology (CMLT)</div>
   <h1>Semester 1 Study Site</h1>
-  <p class="sub">Starting from zero, 20 days, one goal: <strong>maximum marks</strong>. Real content for every subject — not just links — built around the shared CTEVT Health Science First Year syllabus your CMLT curriculum officially defers to.</p>
+  <p class="sub">Starting from zero, 20 days, one goal: <strong>maximum marks</strong>. Every subject page now leads with the real unit-by-unit marks weightage straight from CTEVT's official curriculum document, then goes deep on the highest-marks units first.</p>
 </header>
 
 <nav class="jump" id="sitenav"></nav>
@@ -110,15 +110,15 @@ SCHEDULE.forEach(row=>{
 });
 
 const SUBJECTS = [
-  {href:"subjects/anatomy.html", name:"Anatomy &amp; Physiology", tag:"Core · Days 2–4", stat:"9 topics covered"},
-  {href:"subjects/chemistry.html", name:"Chemistry", tag:"Core · Days 5–6", stat:"8 topics covered"},
-  {href:"subjects/physics.html", name:"Physics", tag:"Core · Days 7–8", stat:"8 topics covered"},
-  {href:"subjects/botany.html", name:"Botany", tag:"Science · Day 9", stat:"7 topics covered"},
-  {href:"subjects/zoology.html", name:"Zoology", tag:"Science · Day 10", stat:"7 topics covered"},
-  {href:"subjects/math.html", name:"Mathematics &amp; Statistics", tag:"Core · Days 11–12", stat:"8 topics covered"},
-  {href:"subjects/english.html", name:"English", tag:"Language · Day 13", stat:"7 topics covered"},
-  {href:"subjects/nepali.html", name:"Nepali", tag:"Language · Days 14–15", stat:"6 topics covered"},
-  {href:"subjects/social.html", name:"Social Studies", tag:"General · Day 16", stat:"7 topics covered"},
+  {href:"subjects/anatomy.html", name:"Anatomy &amp; Physiology", tag:"Core · Days 2–4", stat:"15 real units, weighted"},
+  {href:"subjects/chemistry.html", name:"Chemistry", tag:"Core · Days 5–6", stat:"3 real units, weighted"},
+  {href:"subjects/physics.html", name:"Physics", tag:"Core · Days 7–8", stat:"8 real units, weighted"},
+  {href:"subjects/botany.html", name:"Botany", tag:"Science · Day 9", stat:"9 real units, weighted"},
+  {href:"subjects/zoology.html", name:"Zoology", tag:"Science · Day 10", stat:"9 real units, weighted"},
+  {href:"subjects/math.html", name:"Mathematics &amp; Statistics", tag:"Core · Days 11–12", stat:"19 real units, weighted"},
+  {href:"subjects/english.html", name:"English", tag:"Language · Day 13", stat:"15 real units + texts"},
+  {href:"subjects/nepali.html", name:"Nepali", tag:"Language · Days 14–15", stat:"7 real units + texts"},
+  {href:"subjects/social.html", name:"Social Studies", tag:"General · Day 16", stat:"5 real units, weighted"},
 ];
 document.getElementById('subject-grid').innerHTML = SUBJECTS.map(s=>`
   <a class="subject-tile" href="${s.href}">
