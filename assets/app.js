@@ -11,12 +11,14 @@ const SITE_NAV = [
   {key:"nepali", href:"nepali.html", label:"Nepali"},
   {key:"social", href:"social.html", label:"Social Studies"},
   {key:"tools", href:"../tools.html", label:"Tools", topLevel:true},
+  {key:"year2", href:"../year2.html", label:"Year 2", topLevel:true},
+  {key:"year3", href:"../year3.html", label:"Year 3", topLevel:true},
 ];
 
 function renderNav(activeHref, isRoot){
   const nav = document.getElementById('sitenav');
   if(!nav) return;
-  nav.innerHTML = SITE_NAV.map(item=>{
+  const links = SITE_NAV.map(item=>{
     let href = item.href;
     if(isRoot){
       href = (item.root || item.topLevel) ? item.href.replace('../', '') : 'subjects/' + item.href;
@@ -26,6 +28,7 @@ function renderNav(activeHref, isRoot){
       : item.href === activeHref;
     return `<a href="${href}"${isActive?' class="active"':''}>${item.label}</a>`;
   }).join('');
+  nav.innerHTML = `<div class="jump-inner">${links}</div>`;
 }
 
 // ===== Storage helper (localStorage-backed, with safe in-memory fallback) =====
