@@ -10,6 +10,7 @@ const SITE_NAV = [
   {key:"english", href:"english.html", label:"English"},
   {key:"nepali", href:"nepali.html", label:"Nepali"},
   {key:"social", href:"social.html", label:"Social Studies"},
+  {key:"tools", href:"../tools.html", label:"Tools", topLevel:true},
 ];
 
 function renderNav(activeHref, isRoot){
@@ -18,9 +19,11 @@ function renderNav(activeHref, isRoot){
   nav.innerHTML = SITE_NAV.map(item=>{
     let href = item.href;
     if(isRoot){
-      href = item.root ? 'index.html' : 'subjects/' + item.href;
+      href = (item.root || item.topLevel) ? item.href.replace('../', '') : 'subjects/' + item.href;
     }
-    const isActive = item.href === activeHref;
+    const isActive = (item.topLevel || item.root)
+      ? item.href.replace('../', '') === activeHref
+      : item.href === activeHref;
     return `<a href="${href}"${isActive?' class="active"':''}>${item.label}</a>`;
   }).join('');
 }
