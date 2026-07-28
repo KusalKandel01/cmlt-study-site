@@ -279,3 +279,35 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
 .fc-controls button.dontknow{border-color:var(--red); color:var(--red);}
 .fc-done{text-align:center; padding:2rem 1rem;}
 .fc-done .num{font-family:var(--serif); font-size:2.2rem; color:var(--heading);}
+
+/* ===== Chapter table of contents ===== */
+.chapter-toc{display:flex; flex-direction:column; gap:.5rem;}
+.chapter-toc-item{
+  display:flex; align-items:baseline; gap:.7rem; padding:.7rem .9rem; background:var(--card);
+  border:1px solid var(--paper-line); border-radius:2px; text-decoration:none; flex-wrap:wrap;
+}
+.chapter-toc-item:hover{border-color:var(--heading); background:var(--paper);}
+.chapter-toc-item .ch-no{
+  font-family:var(--mono); font-size:.75rem; color:var(--red); font-weight:700; flex-shrink:0; min-width:3.2rem;
+}
+.chapter-toc-item .ch-name{font-family:var(--serif); font-size:1rem; color:var(--heading); font-weight:600; flex:1;}
+.chapter-toc-item .ch-meta{font-family:var(--mono); font-size:.7rem; color:var(--muted);}
+
+/* ===== Practice questions block ===== */
+.qn-block{
+  margin-top:2rem; padding-top:1.4rem; border-top:2px solid var(--paper-line);
+}
+.qn-heading{ font-family:var(--mono); font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; color:var(--heading); margin-bottom:1rem;}
+.qn-group{margin-bottom:1.1rem;}
+.qn-tag{
+  display:inline-block; font-family:var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.05em;
+  padding:.2rem .55rem; border-radius:2px; margin-bottom:.5rem; font-weight:700;
+}
+.qn-tag.a{background:var(--gold-bg); color:#5c4813;}
+.qn-tag.b{background:#e3ecf5; color:var(--navy-2);}
+[data-theme="dark"] .qn-tag.b{background:#1c2f42; color:#9dc3e8;}
+.qn-tag.c{background:#f7e3e6; color:var(--red);}
+[data-theme="dark"] .qn-tag.c{background:#3a1f24; color:var(--red);}
+.qn-list{margin:.4rem 0 0; padding-left:1.4rem;}
+.qn-list li{margin-bottom:.5rem; font-size:.94rem;}
+.hi-yield{font-size:.78rem; font-weight:400; color:var(--gold); font-family:var(--sans);}
