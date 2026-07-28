@@ -104,6 +104,28 @@ table.data td{ padding:.5rem .65rem; border-bottom:1px solid var(--paper-line); 
 table.data tr:nth-child(even) td{background:#f5f1e5;}
 .table-scroll{overflow-x:auto;}
 
+/* Weightage tables — exam-marks tables. Ledger-like, gold-accented header. */
+table.data.weightage th{ background:var(--heading); border-bottom:2px solid var(--gold);}
+table.data.weightage td:last-child, table.data.weightage th:last-child{ text-align:right; font-family:var(--mono); }
+
+/* Glossary tables — term/definition pairs. No header bar, reads like a dictionary entry. */
+table.data.glossary{ border:none; background:transparent; min-width:0; }
+table.data.glossary th{ display:none; }
+table.data.glossary td{ border:none; border-bottom:1px solid var(--paper-line); padding:.55rem .1rem; background:transparent !important; }
+table.data.glossary tr td:first-child{ font-weight:700; color:var(--heading); width:34%; padding-right:1rem; }
+
+/* Compare tables — multi-column comparisons (3+ cols, not the weightage table). Bordered grid. */
+table.data.compare th{ background:var(--navy-2); }
+table.data.compare td{ border-right:1px solid var(--paper-line); }
+table.data.compare td:last-child{ border-right:none; }
+
+/* ===== Diagram frame (SVG illustrations embedded in subject pages) ===== */
+.diagram-frame{
+  background:var(--card); border:1px solid var(--paper-line); border-radius:4px;
+  padding:1rem; margin:1rem 0; text-align:center;
+}
+.diagram-frame svg{ max-width:100%; height:auto; }
+
 ol.model-answer, ul.model-answer{ background:var(--card); border:1px solid var(--paper-line);
   padding:.9rem 1.1rem .9rem 2rem; border-radius:2px;}
 ol.model-answer li, ul.model-answer li{margin-bottom:.3rem;}
@@ -331,3 +353,17 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
 .year-card h3{margin:.2rem 0 .5rem; font-family:var(--serif); font-size:1.15rem; color:var(--heading);}
 .year-card p{margin:0 0 .8rem; font-size:.88rem; color:var(--ink); line-height:1.5;}
 .year-card .year-cta{font-family:var(--mono); font-size:.75rem; color:var(--red); font-weight:700;}
+
+/* ===== Priority plan (replaces old DO/DONT green/red cards) ===== */
+.priority-plan{
+  background:var(--card); border:1px solid var(--paper-line); border-left:3px solid var(--heading);
+  border-radius:2px; padding:1.3rem 1.4rem;
+}
+.priority-lead{
+  font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.1em;
+  font-weight:700; color:var(--heading); margin:0 0 .5rem;
+  padding-bottom:.3rem; border-bottom:1px solid var(--paper-line);
+}
+.priority-lead.deprioritize{ margin-top:1.3rem; color:var(--muted); }
+.priority-plan .model-answer{ margin-bottom:0; }
+.priority-plan .deprioritize + .model-answer li{ color:var(--ink); opacity:.85; }
