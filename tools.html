@@ -23,9 +23,9 @@
 <main>
 
 <div class="tool-tabs" id="tool-tabs">
-  <button data-tab="pomodoro" class="active">Pomodoro</button>
-  <button data-tab="todo">Todo List</button>
-  <button data-tab="flashcards">Flashcards</button>
+  <button data-tab="pomodoro" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Pomodoro</button>
+  <button data-tab="todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="5" rx="1"/><path d="M4.2 6.5l1 1L7.8 5.5"/><path d="M11 6.5h10"/><rect x="3" y="15" width="5" height="5" rx="1"/><path d="M11 17.5h10"/></svg>Todo List</button>
+  <button data-tab="flashcards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M6 19h12" opacity="0.5"/></svg>Flashcards</button>
 </div>
 
 <!-- ===== POMODORO ===== -->
@@ -82,6 +82,15 @@
 <script src="assets/app.js"></script>
 <script>
 renderNav('tools.html', true);
+
+/* Activate tab from URL hash (e.g. tools.html#todo), so homepage tiles link directly */
+(function(){
+  const hash = location.hash.replace('#', '');
+  if(hash && document.getElementById('panel-' + hash)){
+    document.querySelectorAll('#tool-tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab === hash));
+    document.querySelectorAll('.tool-panel').forEach(p=>p.classList.toggle('active', p.id === 'panel-' + hash));
+  }
+})();
 
 /* ===== Tab switching ===== */
 document.querySelectorAll('#tool-tabs button').forEach(btn=>{
@@ -294,14 +303,24 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
   const statsEl = document.getElementById('fc-stats');
   const areaEl = document.getElementById('fc-area');
 
-  let currentSubject = 'anatomy';
+  let currentSubject = 'all';
   let deck = [];
   let idx = 0;
   let flipped = false;
   let sessionKnow = 0, sessionDontKnow = 0;
 
+  function cardsForSubject(subject){
+    if(subject === 'all'){
+      // Combine every subject's deck, tagging each card with its source subject
+      return Object.keys(FLASHCARD_DECKS).flatMap(key =>
+        FLASHCARD_DECKS[key].map(c => ({...c, subject: key}))
+      );
+    }
+    return (FLASHCARD_DECKS[subject] || []).map(c => ({...c, subject}));
+  }
+
   function shuffledDeck(subject){
-    const cards = (FLASHCARD_DECKS[subject] || []).slice();
+    const cards = cardsForSubject(subject);
     for(let i = cards.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * (i+1));
       [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -322,7 +341,8 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
 
   function renderStats(){
     const total = deck.length;
-    statsEl.textContent = total ? `Card ${Math.min(idx+1,total)} of ${total} · Know: ${sessionKnow} · Review again: ${sessionDontKnow}` : '';
+    const label = currentSubject === 'all' ? 'All subjects, shuffled' : SUBJECT_LABELS[currentSubject];
+    statsEl.textContent = total ? `${label} · Card ${Math.min(idx+1,total)} of ${total} · Know: ${sessionKnow} · Review again: ${sessionDontKnow}` : '';
   }
 
   function renderCard(){
@@ -346,7 +366,7 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     const card = deck[idx];
     areaEl.innerHTML = `
       <div class="fc-card" id="fc-card">
-        <span class="fc-side-label">${flipped ? 'Definition' : 'Term'}</span>
+        <span class="fc-side-label">${flipped ? 'Definition' : SUBJECT_LABELS[card.subject] || card.subject}</span>
         ${flipped ? `<span class="fc-def"></span>` : `<span></span>`}
       </div>
       <p class="fc-hint">Tap the card to flip</p>
@@ -366,9 +386,12 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     });
   }
 
-  subjectRow.innerHTML = Object.keys(FLASHCARD_DECKS).map(key => `
-    <button data-subj="${key}"${key===currentSubject?' class="active"':''}>${SUBJECT_LABELS[key] || key} (${FLASHCARD_DECKS[key].length})</button>
+  const totalCards = Object.values(FLASHCARD_DECKS).reduce((sum, arr) => sum + arr.length, 0);
+  const allBtn = `<button data-subj="all" class="fc-all-btn active">All Subjects — Random (${totalCards})</button>`;
+  const subjectBtns = Object.keys(FLASHCARD_DECKS).map(key => `
+    <button data-subj="${key}">${SUBJECT_LABELS[key] || key} (${FLASHCARD_DECKS[key].length})</button>
   `).join('');
+  subjectRow.innerHTML = allBtn + subjectBtns;
   subjectRow.querySelectorAll('button').forEach(btn=>{
     btn.addEventListener('click', ()=> startDeck(btn.dataset.subj));
   });

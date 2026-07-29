@@ -1,34 +1,120 @@
-// ===== Shared navigation =====
-const SITE_NAV = [
-  {href:"../index.html", label:"Home", root:true},
-  {key:"anatomy", href:"anatomy.html", label:"Anatomy & Phys."},
-  {key:"chemistry", href:"chemistry.html", label:"Chemistry"},
-  {key:"physics", href:"physics.html", label:"Physics"},
-  {key:"botany", href:"botany.html", label:"Botany"},
-  {key:"zoology", href:"zoology.html", label:"Zoology"},
-  {key:"math", href:"math.html", label:"Math & Stats"},
-  {key:"english", href:"english.html", label:"English"},
-  {key:"nepali", href:"nepali.html", label:"Nepali"},
-  {key:"social", href:"social.html", label:"Social Studies"},
-  {key:"tools", href:"../tools.html", label:"Tools", topLevel:true},
-  {key:"year2", href:"../year2.html", label:"Year 2", topLevel:true},
-  {key:"year3", href:"../year3.html", label:"Year 3", topLevel:true},
+// ===== Shared navigation (grouped by year, dropdown-based, easy to extend) =====
+const SITE_NAV_YEARS = [
+  {
+    key: "year1", label: "Year 1",
+    hub: { href: "../index.html#subjects", label: "Year 1 Overview" },
+    subjects: [
+      {key:"anatomy", href:"anatomy.html", label:"Anatomy & Phys."},
+      {key:"chemistry", href:"chemistry.html", label:"Chemistry"},
+      {key:"physics", href:"physics.html", label:"Physics"},
+      {key:"botany", href:"botany.html", label:"Botany"},
+      {key:"zoology", href:"zoology.html", label:"Zoology"},
+      {key:"math", href:"math.html", label:"Math & Stats"},
+      {key:"english", href:"english.html", label:"English"},
+      {key:"nepali", href:"nepali.html", label:"Nepali"},
+      {key:"social", href:"social.html", label:"Social Studies"},
+    ]
+  },
+  {
+    key: "year2", label: "Year 2",
+    hub: { href: "../year2.html", label: "Year 2 Overview" },
+    subjects: [
+      {key:"y2-microbiology", href:"y2-microbiology.html", label:"Microbiology & Immunology"},
+      {key:"y2-hematology", href:"y2-hematology.html", label:"Hematology & Blood Banking"},
+      {key:"y2-biochemistry", href:"y2-biochemistry.html", label:"Clinical Biochemistry"},
+      {key:"y2-parasitology", href:"y2-parasitology.html", label:"Medical Parasitology"},
+      {key:"y2-pathology", href:"y2-pathology.html", label:"Clinical Pathology"},
+      {key:"y2-publichealth", href:"y2-publichealth.html", label:"Public Health & First Aid"},
+    ]
+  },
+  {
+    key: "year3", label: "Year 3",
+    hub: { href: "../year3.html", label: "Year 3 Overview" },
+    subjects: [
+      {key:"y3-histopathology", href:"y3-histopathology.html", label:"Histopathology & Cytopathology"},
+      {key:"y3-instrumentation", href:"y3-instrumentation.html", label:"Instrumentation & Automation"},
+      {key:"y3-labmanagement", href:"y3-labmanagement.html", label:"Clinical Lab Management"},
+      {key:"y3-clinical-practicum", href:"y3-clinical-practicum.html", label:"Clinical Practicum I–III"},
+    ]
+  },
 ];
+const SITE_NAV_TAIL = [
+  {key:"tools", href:"../tools.html", label:"Tools"},
+];
+
+function _resolveNavHref(href, isRoot){
+  if(!isRoot) return href;
+  return href.startsWith('../') ? href.replace('../', '') : 'subjects/' + href;
+}
 
 function renderNav(activeHref, isRoot){
   const nav = document.getElementById('sitenav');
   if(!nav) return;
-  const links = SITE_NAV.map(item=>{
-    let href = item.href;
-    if(isRoot){
-      href = (item.root || item.topLevel) ? item.href.replace('../', '') : 'subjects/' + item.href;
-    }
-    const isActive = (item.topLevel || item.root)
-      ? item.href.replace('../', '') === activeHref
-      : item.href === activeHref;
-    return `<a href="${href}"${isActive?' class="active"':''}>${item.label}</a>`;
-  }).join('');
-  nav.innerHTML = `<div class="jump-inner">${links}</div>`;
+
+  const homeHref = _resolveNavHref('../index.html', isRoot);
+  const homeActive = activeHref === 'index.html' || activeHref === null;
+  let html = `<a href="${homeHref}"${homeActive ? ' class="active"' : ''}>Home</a>`;
+
+  SITE_NAV_YEARS.forEach(year => {
+    const subjectMatch = year.subjects.find(s => s.href === activeHref);
+    const hubMatch = activeHref === year.hub.href.replace('../','').split('#')[0];
+    const yearActive = !!subjectMatch || (hubMatch && !subjectMatch);
+    const hubHref = _resolveNavHref(year.hub.href, isRoot);
+    const subjectLinks = year.subjects.map(s => {
+      const href = _resolveNavHref(s.href, isRoot);
+      const isActive = s.href === activeHref;
+      return `<a href="${href}"${isActive ? ' class="active"' : ''}>${s.label}</a>`;
+    }).join('');
+    html += `
+      <div class="nav-dropdown${yearActive ? ' active' : ''}">
+        <button class="nav-dropdown-toggle" type="button" aria-expanded="false">${year.label} <span class="caret">▾</span></button>
+        <div class="nav-dropdown-panel">
+          <a href="${hubHref}" class="nav-dropdown-hub">${year.hub.label} →</a>
+          ${subjectLinks}
+        </div>
+      </div>`;
+  });
+
+  SITE_NAV_TAIL.forEach(item => {
+    const href = _resolveNavHref(item.href, isRoot);
+    const isActive = item.href.replace('../','') === activeHref;
+    html += `<a href="${href}"${isActive ? ' class="active"' : ''}>${item.label}</a>`;
+  });
+
+  nav.innerHTML = `<div class="jump-inner">${html}</div>`;
+  _initNavDropdowns(nav);
+}
+
+function _initNavDropdowns(nav){
+  const dropdowns = nav.querySelectorAll('.nav-dropdown');
+  function closeAll(except){
+    dropdowns.forEach(d => { if(d !== except) d.classList.remove('open'); });
+  }
+  function positionPanel(d){
+    const toggle = d.querySelector('.nav-dropdown-toggle');
+    const panel = d.querySelector('.nav-dropdown-panel');
+    const rect = toggle.getBoundingClientRect();
+    panel.style.top = rect.bottom + 'px';
+    panel.style.left = Math.min(rect.left, window.innerWidth - 240) + 'px';
+  }
+  dropdowns.forEach(d => {
+    const toggle = d.querySelector('.nav-dropdown-toggle');
+    toggle.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = d.classList.contains('open');
+      closeAll();
+      if(!isOpen){ positionPanel(d); }
+      d.classList.toggle('open', !isOpen);
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+    d.querySelector('.nav-dropdown-panel').addEventListener('click', e => e.stopPropagation());
+  });
+  document.addEventListener('click', () => closeAll());
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAll(); });
+  window.addEventListener('resize', () => closeAll());
+  window.addEventListener('scroll', () => {
+    nav.querySelectorAll('.nav-dropdown.open').forEach(positionPanel);
+  }, {passive:true});
 }
 
 // ===== Storage helper (localStorage-backed, with safe in-memory fallback) =====
@@ -169,10 +255,11 @@ function renderDashboard(){
   if(!el) return;
   const p = loadProgress();
   const daysDone = Object.keys(p).filter(k => k.startsWith('day') && p[k]).length;
-  const subjectsVisited = SITE_NAV.filter(s => s.key && p['visited-' + s.key]).length;
+  const year1Subjects = SITE_NAV_YEARS[0].subjects;
+  const subjectsVisited = year1Subjects.filter(s => s.key && p['visited-' + s.key]).length;
   el.innerHTML = `
     <div class="stat"><div class="num">${daysDone}/20</div><div class="lbl">Days complete</div></div>
-    <div class="stat"><div class="num">${subjectsVisited}/9</div><div class="lbl">Subjects opened</div></div>
+    <div class="stat"><div class="num">${subjectsVisited}/${year1Subjects.length}</div><div class="lbl">Subjects opened</div></div>
     <div class="stat"><button class="reset-link" id="reset-progress-btn">Reset all progress</button></div>
   `;
   const resetBtn = document.getElementById('reset-progress-btn');
