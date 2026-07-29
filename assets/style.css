@@ -11,6 +11,8 @@
   --ink:#241f18;
   --muted:#6b6252;
   --card:#faf7ee;
+  --stripe:#f5f1e5;
+  --gold-text:#5c4813;
   --font-scale:1;
   --on-dark:#f1ece0;
   --serif: "Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
@@ -28,6 +30,8 @@
   --ink:#ece5d6;
   --muted:#b3a688;
   --card:#231e16;
+  --stripe:#2b2418;
+  --gold-text:#f0dfb0;
 }
 [data-theme="dark"] .chip{ color:var(--heading); }
 [data-theme="dark"] table.data td, [data-theme="dark"] .ledger-table td { color:var(--ink); }
@@ -101,7 +105,7 @@ table.data{ font-size:.9rem; background:var(--card); border:1px solid var(--pape
 table.data th{ background:var(--navy); color:var(--on-dark); text-align:left; padding:.5rem .65rem;
   font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; text-transform:uppercase;}
 table.data td{ padding:.5rem .65rem; border-bottom:1px solid var(--paper-line); vertical-align:top;}
-table.data tr:nth-child(even) td{background:#f5f1e5;}
+table.data tr:nth-child(even) td{background:var(--stripe);}
 .table-scroll{overflow-x:auto;}
 
 /* Weightage tables — exam-marks tables. Ledger-like, gold-accented header. */
@@ -138,7 +142,7 @@ ol.model-answer li, ul.model-answer li{margin-bottom:.3rem;}
 }
 .chip:hover{border-color:var(--heading); background:var(--paper);}
 .chip::after{content:"↗"; font-size:.72rem; opacity:.6;}
-.chip.priority{border-color:var(--gold); background:var(--gold-bg); color:#5c4813;}
+.chip.priority{border-color:var(--gold); background:var(--gold-bg); color:var(--gold-text);}
 .chip.priority::before{content:"★"; color:var(--gold); font-size:.72rem;}
 
 .stamp-btn{
@@ -156,7 +160,7 @@ ol.model-answer li, ul.model-answer li{margin-bottom:.3rem;}
   display:block; background:var(--card); border:1px solid var(--paper-line); border-top:3px solid var(--heading);
   padding:1rem 1.1rem; border-radius:2px; text-decoration:none; color:var(--ink);
 }
-.subject-tile:hover{border-top-color:var(--red); background:#fff;}
+.subject-tile:hover{border-top-color:var(--red); background:var(--card);}
 .subject-tile .t{font-family:var(--serif); font-size:1.05rem; color:var(--heading); font-weight:600;}
 .subject-tile .d{font-family:var(--mono); font-size:.7rem; color:var(--muted); margin-top:.3rem;}
 .subject-tile .stat{font-size:.72rem; color:var(--green); margin-top:.4rem; font-family:var(--mono);}
@@ -168,7 +172,7 @@ ol.model-answer li, ul.model-answer li{margin-bottom:.3rem;}
 .ledger-table th{ background:var(--navy); color:var(--on-dark); text-align:left; padding:.5rem .65rem;
   font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; text-transform:uppercase;}
 .ledger-table td{ padding:.5rem .65rem; border-bottom:1px solid var(--paper-line); vertical-align:top;}
-.ledger-table tr:nth-child(even) td{background:#f5f1e5;}
+.ledger-table tr:nth-child(even) td{background:var(--stripe);}
 .ledger-table td.day{font-family:var(--mono); color:var(--red); font-weight:bold; width:2.2rem;}
 .ledger-table td.subj{font-weight:600; color:var(--heading); white-space:nowrap;}
 
@@ -329,7 +333,7 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
   display:inline-block; font-family:var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.05em;
   padding:.2rem .55rem; border-radius:2px; margin-bottom:.5rem; font-weight:700;
 }
-.qn-tag.a{background:var(--gold-bg); color:#5c4813;}
+.qn-tag.a{background:var(--gold-bg); color:var(--gold-text);}
 .qn-tag.b{background:#e3ecf5; color:var(--navy-2);}
 [data-theme="dark"] .qn-tag.b{background:#1c2f42; color:#9dc3e8;}
 .qn-tag.c{background:#f7e3e6; color:var(--red);}
