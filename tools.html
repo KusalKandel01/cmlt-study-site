@@ -6,7 +6,7 @@
 <title>Study Tools — CMLT Semester 1</title>
 <meta name="description" content="Pomodoro timer, todo list, and subject flashcards for the CMLT First Year study site.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231c2b3a%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22%23a5822f%22 font-family=%22Georgia,serif%22>C</text></svg>">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v4">
 <script>try{var p=JSON.parse(localStorage.getItem('cmlt-study-prefs-v1')||'{}');if(p.theme==='dark')document.documentElement.setAttribute('data-theme','dark');if(p.fontScale)document.documentElement.style.setProperty('--font-scale',p.fontScale);}catch(e){}</script>
 </head>
 <body>
@@ -47,6 +47,26 @@
     </div>
     <div class="pomodoro-sessions" id="pomo-sessions">Sessions completed today: <span id="pomo-count">0</span></div>
   </div>
+
+  <div class="streak-panel">
+    <div class="streak-header">
+      <div class="streak-count">
+        <span class="streak-num" id="streak-num">0</span>
+        <span class="streak-label">day streak</span>
+      </div>
+      <div class="streak-total" id="streak-total">0 sessions total</div>
+    </div>
+    <div class="streak-grid" id="streak-grid"></div>
+    <div class="streak-legend">
+      <span>Less</span>
+      <span class="streak-swatch" data-level="0"></span>
+      <span class="streak-swatch" data-level="1"></span>
+      <span class="streak-swatch" data-level="2"></span>
+      <span class="streak-swatch" data-level="3"></span>
+      <span class="streak-swatch" data-level="4"></span>
+      <span>More</span>
+    </div>
+  </div>
 </section>
 
 <!-- ===== TODO ===== -->
@@ -78,8 +98,8 @@
 
 <footer>CTEVT CMLT · First Year (shared Health Science syllabus) · Semester 1</footer>
 
-<script src="assets/flashcards-data.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/flashcards-data.js?v4"></script>
+<script src="assets/app.js?v4"></script>
 <script>
 renderNav('tools.html', true);
 
@@ -108,7 +128,7 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
 (function(){
   const DURATIONS = { work: 25*60, short: 5*60, long: 15*60 };
   const LABELS = { work: 'Focus — stay on one subject', short: 'Short break — stand up, stretch', long: 'Long break — you earned it' };
-  const POMO_KEY = 'cmlt-pomodoro-v1';
+  const HISTORY_KEY = 'cmlt-pomodoro-history-v1';
 
   let mode = 'work';
   let secondsLeft = DURATIONS.work;
@@ -122,26 +142,84 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
   const resetBtn = document.getElementById('pomo-reset');
   const countEl = document.getElementById('pomo-count');
   const modeButtons = document.querySelectorAll('.pomodoro-mode-row button');
+  const streakNumEl = document.getElementById('streak-num');
+  const streakTotalEl = document.getElementById('streak-total');
+  const streakGridEl = document.getElementById('streak-grid');
 
-  function todayKey(){
-    const d = new Date();
+  function dateKey(d){
     return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
   }
+  function todayKey(){ return dateKey(new Date()); }
 
-  function loadState(){
-    const data = loadKey(POMO_KEY);
-    return data;
+  function loadHistory(){
+    const data = loadKey(HISTORY_KEY);
+    return (data && typeof data === 'object') ? data : {};
   }
-  function saveCount(count){
-    const data = loadState();
-    data.date = todayKey();
-    data.count = count;
-    saveKey(POMO_KEY, data);
+  function saveHistory(history){
+    saveKey(HISTORY_KEY, history);
   }
   function getTodayCount(){
-    const data = loadState();
-    if(data.date === todayKey()) return data.count || 0;
-    return 0;
+    const history = loadHistory();
+    return history[todayKey()] || 0;
+  }
+  function incrementToday(){
+    const history = loadHistory();
+    const key = todayKey();
+    history[key] = (history[key] || 0) + 1;
+    saveHistory(history);
+  }
+
+  function computeStreak(history){
+    let streak = 0;
+    let d = new Date();
+    // if today has 0 sessions yet, streak counting starts from yesterday (today can still "continue" the streak once a session is logged)
+    if(!history[dateKey(d)]){
+      d.setDate(d.getDate() - 1);
+    }
+    while(history[dateKey(d)] > 0){
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function levelFor(count){
+    if(!count) return 0;
+    if(count === 1) return 1;
+    if(count <= 3) return 2;
+    if(count <= 5) return 3;
+    return 4;
+  }
+
+  function renderStreak(){
+    const history = loadHistory();
+    const total = Object.values(history).reduce((a,b)=>a+b, 0);
+    streakNumEl.textContent = computeStreak(history);
+    streakTotalEl.textContent = `${total} session${total===1?'':'s'} total`;
+
+    // Build a GitHub-style grid: most recent 98 days (14 weeks), oldest first, columns = weeks
+    const days = [];
+    const today = new Date();
+    for(let i = 97; i >= 0; i--){
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = dateKey(d);
+      days.push({ date: d, count: history[key] || 0 });
+    }
+    // pad the front so the grid starts on a Sunday column
+    const firstDow = days[0].date.getDay();
+    const padded = new Array(firstDow).fill(null).concat(days);
+
+    const weeks = [];
+    for(let i = 0; i < padded.length; i += 7){
+      weeks.push(padded.slice(i, i+7));
+    }
+
+    streakGridEl.innerHTML = weeks.map(week => `
+      <div class="streak-col">
+        ${week.map(day => day ? `<span class="streak-cell" data-level="${levelFor(day.count)}" title="${day.date.toDateString()}: ${day.count} session${day.count===1?'':'s'}"></span>` : `<span class="streak-cell streak-cell-empty"></span>`).join('')}
+      </div>
+    `).join('');
   }
 
   function render(){
@@ -151,6 +229,7 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     label.textContent = LABELS[mode];
     document.title = running ? `${m}:${s} — CMLT Study` : 'Study Tools — CMLT Semester 1';
     countEl.textContent = getTodayCount();
+    renderStreak();
   }
 
   function beep(){
@@ -174,7 +253,7 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
       running = false;
       beep();
       if(mode === 'work'){
-        saveCount(getTodayCount() + 1);
+        incrementToday();
       }
       startBtn.style.display = 'inline';
       pauseBtn.style.display = 'none';
