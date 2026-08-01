@@ -6,7 +6,7 @@
 <title>CTEVT CMLT · 3-Year Study Site</title>
 <meta name="description" content="A personal CMLT study site covering all 3 years: exam strategy, schedules, and real study notes for every subject, built from the official CTEVT curriculum.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231c2b3a%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22%23a5822f%22 font-family=%22Georgia,serif%22>C</text></svg>">
-<link rel="stylesheet" href="assets/style.css?v4">
+<link rel="stylesheet" href="assets/style.css?v6">
 <script>try{var p=JSON.parse(localStorage.getItem('cmlt-study-prefs-v1')||'{}');if(p.theme==='dark')document.documentElement.setAttribute('data-theme','dark');if(p.fontScale)document.documentElement.style.setProperty('--font-scale',p.fontScale);}catch(e){}</script>
 </head>
 <body>
@@ -48,8 +48,18 @@
     </div>
   </section>
 
+  <section id="exam-routine-callout">
+    <h2 class="section-title"><span class="no">02</span> Exam Routine</h2>
+    <p class="lede">Official 2083 exam dates for all 18 subjects across 3 years, transcribed from CTEVT's published notice.</p>
+    <a class="tool-launcher-tile" href="exam-routine.html" style="max-width:260px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/><path d="M8 13h2M8 16h2M14 13h2M14 16h2"/></svg>
+      <span class="t">Exam Routine</span>
+      <span class="d">Real dates, all 3 years</span>
+    </a>
+  </section>
+
   <section id="strategy">
-    <h2 class="section-title"><span class="no">02</span> How To Score Max From Zero</h2>
+    <h2 class="section-title"><span class="no">03</span> How To Score Max From Zero</h2>
     <p class="lede">Nine subjects, zero background, 20 days — real mastery isn't possible, but maximizing marks is. CTEVT papers are highly patterned. Use that.</p>
     <div class="card red">
       <h3 style="margin-top:0;">The exam structure (learn this Day 1)</h3>
@@ -70,7 +80,7 @@
   </section>
 
   <section id="schedule">
-    <h2 class="section-title"><span class="no">03</span> Day-by-Day Schedule</h2>
+    <h2 class="section-title"><span class="no">04</span> Day-by-Day Schedule</h2>
     <p class="lede">Weighted by difficulty, not equal days each. Tap a stamp once you've finished that day.</p>
     <div class="table-scroll">
     <table class="ledger-table">
@@ -82,7 +92,7 @@
   </section>
 
   <section id="tools-callout">
-    <h2 class="section-title"><span class="no">04</span> Study Tools</h2>
+    <h2 class="section-title"><span class="no">05</span> Study Tools</h2>
     <p class="lede">A Pomodoro timer, a todo list, and a flashcard quiz built from the definitions already on this site — all in one place.</p>
     <div class="tool-launcher-grid">
       <a class="tool-launcher-tile" href="tools.html#pomodoro">
@@ -104,13 +114,13 @@
   </section>
 
   <section id="subjects">
-    <h2 class="section-title"><span class="no">05</span> Subject Notes</h2>
+    <h2 class="section-title"><span class="no">06</span> Subject Notes</h2>
     <p class="lede">Real content for every subject — definitions, high-yield tables, and model Group B/C answers, plus verified resource links. Click a subject to start.</p>
     <div class="subject-grid" id="subject-grid"></div>
   </section>
 
   <section id="extra">
-    <h2 class="section-title"><span class="no">06</span> General &amp; Cross-Subject Resources</h2>
+    <h2 class="section-title"><span class="no">07</span> General &amp; Cross-Subject Resources</h2>
     <p class="lede">Hubs that cover multiple/all 9 subjects in one place, plus the official curriculum and a video channel.</p>
     <ul style="list-style:none; margin:0; padding:0; display:grid; gap:.7rem;" id="extra-list"></ul>
   </section>
@@ -119,7 +129,7 @@
 
 <footer>CTEVT CMLT · All 3 Years · built as a personal study reference, not an official CTEVT document.</footer>
 
-<script src="assets/app.js?v4"></script>
+<script src="assets/app.js?v6"></script>
 <script>
 renderNav(null, true);
 
@@ -183,9 +193,9 @@ const EXTRAS = [
 ];
 document.getElementById('extra-list').innerHTML = EXTRAS.map(e=>`
   <li class="card" style="margin-bottom:0;">
-    <div style="font-weight:700; color:var(--navy); font-family:var(--serif); font-size:1rem;">${e.name}</div>
+    <div style="font-weight:700; color:var(--heading); font-family:var(--serif); font-size:1rem;">${e.name}</div>
     <div style="font-size:.85rem; color:var(--muted); margin:.15rem 0 .3rem;">${e.desc}</div>
-    <a href="${e.url}" target="_blank" rel="noopener" style="font-size:.85rem; word-break:break-word;">${e.url}</a>
+    <a href="${e.url}" target="_blank" rel="noopener" style="font-size:.85rem; word-break:break-word; color:var(--link);">${e.url}</a>
   </li>`).join('');
 </script>
 </body>

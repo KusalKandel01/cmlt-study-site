@@ -13,6 +13,7 @@
   --card:#faf7ee;
   --stripe:#f5f1e5;
   --gold-text:#5c4813;
+  --link:#28405a;
   --font-scale:1;
   --on-dark:#f1ece0;
   --serif: "Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
@@ -32,6 +33,7 @@
   --card:#231e16;
   --stripe:#2b2418;
   --gold-text:#f0dfb0;
+  --link:#8fb8dd;
 }
 [data-theme="dark"] .chip{ color:var(--heading); }
 [data-theme="dark"] table.data td, [data-theme="dark"] .ledger-table td { color:var(--ink); }
@@ -42,7 +44,7 @@ body{
   overflow-x:hidden; line-height:1.55;
   font-size:calc(1rem * var(--font-scale));
 }
-a{color:var(--navy-2);}
+a{color:var(--link);}
 a:hover{color:var(--red);}
 h1,h2,h3,h4{font-family:var(--serif); color:var(--heading); line-height:1.25;}
 table{border-collapse:collapse; width:100%;}
@@ -104,14 +106,15 @@ nav.jump a.active{background:var(--red); border-color:var(--red); color:#fff; bo
   padding:.4rem 0; max-height:70vh; overflow-y:auto;
 }
 .nav-dropdown.open .nav-dropdown-panel{display:block;}
-.nav-dropdown-panel a{
-  display:block; padding:.6rem 1rem; color:var(--heading); text-decoration:none; font-family:var(--sans);
-  font-size:.88rem; font-weight:500; border-right:none; white-space:normal; border-radius:0;
+nav.jump .nav-dropdown-panel a{
+  display:block; padding:.6rem 1rem; color:var(--heading) !important; text-decoration:none; font-family:var(--sans);
+  font-size:.88rem; font-weight:600; border-right:none; white-space:normal; border-radius:0;
+  background:transparent;
 }
-.nav-dropdown-panel a:hover, .nav-dropdown-panel a.active{background:var(--gold-bg); color:var(--heading); font-weight:700;}
-.nav-dropdown-panel a.nav-dropdown-hub{
+nav.jump .nav-dropdown-panel a:hover, nav.jump .nav-dropdown-panel a.active{background:var(--gold-bg); color:var(--heading) !important; font-weight:700;}
+nav.jump .nav-dropdown-panel a.nav-dropdown-hub{
   font-family:var(--mono); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
-  color:var(--gold); border-bottom:1px solid var(--paper-line); margin-bottom:.3rem; padding-bottom:.6rem;
+  color:var(--gold) !important; border-bottom:1px solid var(--paper-line); margin-bottom:.3rem; padding-bottom:.6rem;
 }
 
 main{max-width:900px; margin:0 auto; padding:2rem 1.4rem 4rem;}
@@ -309,10 +312,10 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
 .streak-num{font-family:var(--serif); font-size:2.2rem; font-weight:700; color:var(--red);}
 .streak-label{font-family:var(--mono); font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
 .streak-total{font-family:var(--mono); font-size:.75rem; color:var(--muted);}
-.streak-grid{display:flex; gap:3px; overflow-x:auto; padding-bottom:.3rem;}
-.streak-col{display:flex; flex-direction:column; gap:3px;}
+.streak-grid{display:flex; gap:4px; overflow-x:auto; padding-bottom:.3rem;}
+.streak-col{display:flex; flex-direction:column; gap:4px;}
 .streak-cell{
-  width:11px; height:11px; border-radius:2.5px; background:var(--paper-line); flex-shrink:0;
+  width:15px; height:15px; border-radius:3px; background:var(--paper-line); flex-shrink:0;
   transition:.1s;
 }
 .streak-cell-empty{background:transparent;}
@@ -322,8 +325,8 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
 .streak-cell[data-level="3"]{background:var(--gold);}
 .streak-cell[data-level="4"]{background:var(--red);}
 .streak-cell:hover{outline:1.5px solid var(--heading); outline-offset:1px;}
-.streak-legend{display:flex; align-items:center; gap:.3rem; margin-top:.6rem; font-family:var(--mono); font-size:.68rem; color:var(--muted);}
-.streak-swatch{width:11px; height:11px; border-radius:2.5px; display:inline-block;}
+.streak-legend{display:flex; align-items:center; gap:.4rem; margin-top:.7rem; font-family:var(--mono); font-size:.72rem; color:var(--muted);}
+.streak-swatch{width:15px; height:15px; border-radius:3px; display:inline-block;}
 .streak-swatch[data-level="0"]{background:var(--paper-line);}
 .streak-swatch[data-level="1"]{background:var(--gold-bg); border:1px solid var(--gold);}
 .streak-swatch[data-level="2"]{background:var(--gold); opacity:.55;}

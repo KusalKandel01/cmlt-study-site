@@ -40,6 +40,7 @@ const SITE_NAV_YEARS = [
 ];
 const SITE_NAV_TAIL = [
   {key:"tools", href:"../tools.html", label:"Tools"},
+  {key:"exam-routine", href:"../exam-routine.html", label:"Exam Routine"},
 ];
 
 function _resolveNavHref(href, isRoot){
