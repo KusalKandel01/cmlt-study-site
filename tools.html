@@ -6,7 +6,7 @@
 <title>Study Tools — CMLT Semester 1</title>
 <meta name="description" content="Pomodoro timer, todo list, and subject flashcards for the CMLT First Year study site.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231c2b3a%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22%23a5822f%22 font-family=%22Georgia,serif%22>C</text></svg>">
-<link rel="stylesheet" href="assets/style.css?v6">
+<link rel="stylesheet" href="assets/style.css?v8">
 <script>try{var p=JSON.parse(localStorage.getItem('cmlt-study-prefs-v1')||'{}');if(p.theme==='dark')document.documentElement.setAttribute('data-theme','dark');if(p.fontScale)document.documentElement.style.setProperty('--font-scale',p.fontScale);}catch(e){}</script>
 </head>
 <body>
@@ -98,8 +98,8 @@
 
 <footer>CTEVT CMLT · First Year (shared Health Science syllabus) · Semester 1</footer>
 
-<script src="assets/flashcards-data.js?v6"></script>
-<script src="assets/app.js?v6"></script>
+<script src="assets/flashcards-data.js?v8"></script>
+<script src="assets/app.js?v8"></script>
 <script>
 renderNav('tools.html', true);
 
@@ -183,6 +183,22 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     return streak;
   }
 
+  function computeLongestStreak(history){
+    const keys = Object.keys(history).filter(k => history[k] > 0);
+    if(keys.length === 0) return 0;
+    const dates = keys.map(k => {
+      const [y,m,dd] = k.split('-').map(Number);
+      return new Date(y, m-1, dd).getTime();
+    }).sort((a,b) => a-b);
+    let longest = 1, current = 1;
+    for(let i = 1; i < dates.length; i++){
+      const diffDays = Math.round((dates[i] - dates[i-1]) / 86400000);
+      current = (diffDays === 1) ? current + 1 : 1;
+      longest = Math.max(longest, current);
+    }
+    return longest;
+  }
+
   function levelFor(count){
     if(!count) return 0;
     if(count === 1) return 1;
@@ -195,12 +211,12 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     const history = loadHistory();
     const total = Object.values(history).reduce((a,b)=>a+b, 0);
     streakNumEl.textContent = computeStreak(history);
-    streakTotalEl.textContent = `${total} session${total===1?'':'s'} total`;
+    streakTotalEl.innerHTML = `${total} session${total===1?'':'s'} total &nbsp;·&nbsp; Longest streak: ${computeLongestStreak(history)} day${computeLongestStreak(history)===1?'':'s'}`;
 
-    // Build a GitHub-style grid: most recent 98 days (14 weeks), oldest first, columns = weeks
+    // Build a GitHub-style grid: most recent 182 days (26 weeks / ~6 months), oldest first, columns = weeks
     const days = [];
     const today = new Date();
-    for(let i = 97; i >= 0; i--){
+    for(let i = 181; i >= 0; i--){
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       const key = dateKey(d);
@@ -370,27 +386,70 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
 })();
 
 /* =========================================================
-   FLASHCARDS
+   FLASHCARDS + SPACED REPETITION (Leitner system)
    ========================================================= */
 (function(){
-  const FC_KEY = 'cmlt-flashcard-progress-v1';
+  const SRS_KEY = 'cmlt-spaced-repetition-v1';
   const SUBJECT_LABELS = {
     anatomy: 'Anatomy', chemistry: 'Chemistry', physics: 'Physics', botany: 'Botany',
     zoology: 'Zoology', math: 'Math & Stats', english: 'English', nepali: 'Nepali', social: 'Social'
   };
+  // Box level -> days until next review. Box 1 = review again almost immediately (same session), Box 5 = review every 2 weeks.
+  const BOX_INTERVALS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 14 };
+
   const subjectRow = document.getElementById('fc-subject-row');
   const statsEl = document.getElementById('fc-stats');
   const areaEl = document.getElementById('fc-area');
 
   let currentSubject = 'all';
+  let dueOnly = false;
   let deck = [];
   let idx = 0;
   let flipped = false;
   let sessionKnow = 0, sessionDontKnow = 0;
 
+  function cardKey(card){ return card.subject + '::' + card.term; }
+
+  function loadSRS(){
+    const data = loadKey(SRS_KEY);
+    return (data && typeof data === 'object') ? data : {};
+  }
+  function saveSRS(data){ saveKey(SRS_KEY, data); }
+
+  function todayStr(){
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  }
+  function addDays(dateStr, days){
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m-1, d);
+    dt.setDate(dt.getDate() + days);
+    return `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`;
+  }
+
+  function recordResult(card, knewIt){
+    const srs = loadSRS();
+    const key = cardKey(card);
+    const entry = srs[key] || { box: 1 };
+    entry.box = knewIt ? Math.min(5, entry.box + 1) : 1;
+    entry.dueDate = addDays(todayStr(), BOX_INTERVALS[entry.box]);
+    srs[key] = entry;
+    saveSRS(srs);
+  }
+
+  function isDue(card){
+    const srs = loadSRS();
+    const entry = srs[cardKey(card)];
+    if(!entry) return true; // never reviewed = due now
+    return entry.dueDate <= todayStr();
+  }
+
+  function countDue(subject){
+    return cardsForSubject(subject).filter(isDue).length;
+  }
+
   function cardsForSubject(subject){
     if(subject === 'all'){
-      // Combine every subject's deck, tagging each card with its source subject
       return Object.keys(FLASHCARD_DECKS).flatMap(key =>
         FLASHCARD_DECKS[key].map(c => ({...c, subject: key}))
       );
@@ -399,7 +458,8 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
   }
 
   function shuffledDeck(subject){
-    const cards = cardsForSubject(subject);
+    let cards = cardsForSubject(subject);
+    if(dueOnly) cards = cards.filter(isDue);
     for(let i = cards.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * (i+1));
       [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -414,27 +474,28 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     flipped = false;
     sessionKnow = 0;
     sessionDontKnow = 0;
-    subjectRow.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.subj === subject));
+    subjectRow.querySelectorAll('button:not(#fc-due-toggle)').forEach(b => b.classList.toggle('active', b.dataset.subj === subject));
     renderCard();
   }
 
   function renderStats(){
     const total = deck.length;
     const label = currentSubject === 'all' ? 'All subjects, shuffled' : SUBJECT_LABELS[currentSubject];
-    statsEl.textContent = total ? `${label} · Card ${Math.min(idx+1,total)} of ${total} · Know: ${sessionKnow} · Review again: ${sessionDontKnow}` : '';
+    const dueTag = dueOnly ? ' (due for review only)' : '';
+    statsEl.textContent = total ? `${label}${dueTag} · Card ${Math.min(idx+1,total)} of ${total} · Know: ${sessionKnow} · Review again: ${sessionDontKnow}` : 'Nothing due for review right now — nice work. Try All Subjects instead.';
   }
 
   function renderCard(){
     renderStats();
     if(deck.length === 0){
-      areaEl.innerHTML = '<div class="fc-done"><p>No flashcards for this subject yet.</p></div>';
+      areaEl.innerHTML = `<div class="fc-done"><p>${dueOnly ? "Nothing due for review right now." : "No flashcards for this subject yet."}</p></div>`;
       return;
     }
     if(idx >= deck.length){
       areaEl.innerHTML = `
         <div class="fc-done">
           <div class="num">${sessionKnow}/${deck.length}</div>
-          <p>Deck complete — ${sessionKnow} known, ${sessionDontKnow} to review.</p>
+          <p>Deck complete — ${sessionKnow} known, ${sessionDontKnow} to review. Cards you knew are scheduled further out; the rest come back sooner.</p>
           <div class="fc-controls">
             <button id="fc-restart">Shuffle &amp; restart</button>
           </div>
@@ -458,23 +519,39 @@ document.querySelectorAll('#tool-tabs button').forEach(btn=>{
     span.textContent = flipped ? card.def : card.term;
     cardEl.addEventListener('click', ()=>{ flipped = !flipped; renderCard(); });
     document.getElementById('fc-know').addEventListener('click', e=>{
-      e.stopPropagation(); sessionKnow++; idx++; flipped = false; renderCard();
+      e.stopPropagation(); recordResult(card, true); sessionKnow++; idx++; flipped = false; renderCard(); updateDueBadge();
     });
     document.getElementById('fc-dontknow').addEventListener('click', e=>{
-      e.stopPropagation(); sessionDontKnow++; deck.push(card); idx++; flipped = false; renderCard();
+      e.stopPropagation(); recordResult(card, false); sessionDontKnow++; deck.push(card); idx++; flipped = false; renderCard(); updateDueBadge();
     });
   }
 
-  const totalCards = Object.values(FLASHCARD_DECKS).reduce((sum, arr) => sum + arr.length, 0);
-  const allBtn = `<button data-subj="all" class="fc-all-btn active">All Subjects — Random (${totalCards})</button>`;
-  const subjectBtns = Object.keys(FLASHCARD_DECKS).map(key => `
-    <button data-subj="${key}">${SUBJECT_LABELS[key] || key} (${FLASHCARD_DECKS[key].length})</button>
-  `).join('');
-  subjectRow.innerHTML = allBtn + subjectBtns;
-  subjectRow.querySelectorAll('button').forEach(btn=>{
-    btn.addEventListener('click', ()=> startDeck(btn.dataset.subj));
-  });
+  function updateDueBadge(){
+    const dueBtn = document.getElementById('fc-due-toggle');
+    if(dueBtn) dueBtn.textContent = `Due for Review (${countDue('all')})`;
+  }
 
+  function renderSubjectRow(){
+    const totalCards = Object.values(FLASHCARD_DECKS).reduce((sum, arr) => sum + arr.length, 0);
+    const totalDue = countDue('all');
+    const allBtn = `<button data-subj="all" class="fc-all-btn${currentSubject==='all'?' active':''}">All Subjects — Random (${totalCards})</button>`;
+    const subjectBtns = Object.keys(FLASHCARD_DECKS).map(key => `
+      <button data-subj="${key}"${currentSubject===key?' class="active"':''}>${SUBJECT_LABELS[key] || key} (${FLASHCARD_DECKS[key].length})</button>
+    `).join('');
+    const dueBtn = `<button id="fc-due-toggle" class="fc-due-btn${dueOnly?' active':''}">Due for Review (${totalDue})</button>`;
+    subjectRow.innerHTML = dueBtn + allBtn + subjectBtns;
+
+    document.getElementById('fc-due-toggle').addEventListener('click', ()=>{
+      dueOnly = !dueOnly;
+      startDeck(currentSubject);
+      renderSubjectRow();
+    });
+    subjectRow.querySelectorAll('button[data-subj]').forEach(btn=>{
+      btn.addEventListener('click', ()=> startDeck(btn.dataset.subj));
+    });
+  }
+
+  renderSubjectRow();
   startDeck(currentSubject);
 })();
 </script>

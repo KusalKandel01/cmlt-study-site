@@ -66,9 +66,14 @@ header.mast h1{ color:var(--on-dark); font-size:clamp(1.5rem,3.5vw,2.3rem); marg
 header.mast p.sub{ margin:0; font-size:.92rem; color:#d8cfb8; max-width:65ch;}
 
 /* breadcrumb */
-.crumb{font-family:var(--mono); font-size:.72rem; color:#a9bcd0; margin-top:.7rem;}
-.crumb a{color:#c9dcee;}
-.crumb a:hover{color:#fff;}
+.crumb{margin-top:1rem;}
+.crumb a{
+  display:inline-flex; align-items:center; gap:.35rem; font-family:var(--mono); font-size:.72rem;
+  color:#e8e1cf; text-decoration:none; padding:.4rem .8rem; border-radius:6px;
+  background:#ffffff0d; border:1px solid #ffffff2a; box-shadow:0 1px 2px rgba(0,0,0,.15); transition:.15s;
+}
+.crumb a:hover{background:#ffffff22; border-color:#ffffff44; color:#fff;}
+.crumb a:active{box-shadow:none; transform:translateY(1px);}
 
 /* sticky nav */
 nav.jump{
@@ -370,6 +375,8 @@ footer{ text-align:center; padding:2rem 1rem 3rem; color:var(--muted); font-fami
 }
 .fc-subject-row button:hover{border-color:var(--gold); color:var(--heading);}
 .fc-subject-row .fc-all-btn{border-color:var(--gold); font-weight:700; color:var(--heading);}
+.fc-subject-row .fc-due-btn{border-color:var(--red); font-weight:700; color:var(--red);}
+.fc-subject-row .fc-due-btn.active{background:var(--red); border-color:var(--red); color:#fff;}
 .fc-subject-row button.active{background:var(--gold); border-color:var(--gold); color:var(--gold-text); font-weight:700; box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .fc-stats{font-family:var(--mono); font-size:.72rem; color:var(--muted); text-align:center; margin-bottom:.8rem;}
 .fc-card{
