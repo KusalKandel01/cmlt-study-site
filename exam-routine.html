@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Routine — CMLT</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231c2b3a%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22%23a5822f%22 font-family=%22Georgia,serif%22>C</text></svg>">
-<link rel="stylesheet" href="assets/style.css?v8">
+<link rel="stylesheet" href="assets/style.css?v9">
 <script>try{var p=JSON.parse(localStorage.getItem('cmlt-study-prefs-v1')||'{}');if(p.theme==='dark')document.documentElement.setAttribute('data-theme','dark');if(p.fontScale)document.documentElement.style.setProperty('--font-scale',p.fontScale);}catch(e){}</script>
 </head>
 <body>
@@ -36,8 +36,31 @@
   </div>
 </section>
 
+<section id="countdown">
+  <h2 class="section-title"><span class="no">02</span> Live Countdown to Your First Exam</h2>
+  <p class="lede">Counting down to 7:00 AM Nepal time (as published) on each year's first exam date — converted from BS to AD and cross-checked against a verified BS calendar anchor point before building this.</p>
+  <div class="countdown-grid">
+    <div class="countdown-card" data-target="2026-09-10T07:00:00+05:45">
+      <div class="cd-label">Year 1 — Mathematics &amp; Statistics</div>
+      <div class="cd-date">2083-05-25 BS · Sept 10, 2026</div>
+      <div class="cd-timer"><span class="cd-d">--</span>d <span class="cd-h">--</span>h <span class="cd-m">--</span>m <span class="cd-s">--</span>s</div>
+    </div>
+    <div class="countdown-card" data-target="2026-09-09T07:00:00+05:45">
+      <div class="cd-label">Year 2 — Clinical Microbiology &amp; Immunology</div>
+      <div class="cd-date">2083-05-24 BS · Sept 9, 2026</div>
+      <div class="cd-timer"><span class="cd-d">--</span>d <span class="cd-h">--</span>h <span class="cd-m">--</span>m <span class="cd-s">--</span>s</div>
+    </div>
+    <div class="countdown-card" data-target="2026-09-08T07:00:00+05:45">
+      <div class="cd-label">Year 3 — Histopathology &amp; Cytopathology</div>
+      <div class="cd-date">2083-05-23 BS · Sept 8, 2026</div>
+      <div class="cd-timer"><span class="cd-d">--</span>d <span class="cd-h">--</span>h <span class="cd-m">--</span>m <span class="cd-s">--</span>s</div>
+    </div>
+  </div>
+  <p class="note">Counts down in your device's real local time — the target itself is fixed to 7:00 AM Nepal time (UTC+5:45), so it stays accurate no matter where you're viewing this from.</p>
+</section>
+
 <section id="year1">
-  <h2 class="section-title"><span class="no">02</span> Year 1 — First Year (9 subjects)</h2>
+  <h2 class="section-title"><span class="no">03</span> Year 1 — First Year (9 subjects)</h2>
   <p class="lede">From the combined "General Medicine / Pharmacy / Medical Lab. Tech. / ..." column — this is the shared Health Science First Year routine, exactly the subjects on this site's Year 1 pages.</p>
   <div class="table-scroll"><table class="data weightage">
     <tr><th>Date (BS)</th><th>Subject</th><th>Study page</th></tr>
@@ -95,7 +118,36 @@
 
 <footer>CTEVT CMLT · Exam Routine transcribed from the official 2083.04.15 notice · built as a personal study reference, not an official CTEVT document.</footer>
 
-<script src="assets/app.js?v8"></script>
-<script>renderNav('exam-routine.html', true);</script>
+<script src="assets/app.js?v9"></script>
+<script>renderNav('exam-routine.html', true);
+
+(function(){
+  const cards = document.querySelectorAll('.countdown-card');
+  function tick(){
+    cards.forEach(card => {
+      const target = new Date(card.dataset.target).getTime();
+      const now = Date.now();
+      const diff = target - now;
+      const dEl = card.querySelector('.cd-d'), hEl = card.querySelector('.cd-h'),
+            mEl = card.querySelector('.cd-m'), sEl = card.querySelector('.cd-s');
+      if(diff <= 0){
+        card.querySelector('.cd-timer').textContent = 'Exam day is here';
+        card.classList.add('cd-live');
+        return;
+      }
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      dEl.textContent = days;
+      hEl.textContent = String(hours).padStart(2,'0');
+      mEl.textContent = String(mins).padStart(2,'0');
+      sEl.textContent = String(secs).padStart(2,'0');
+    });
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
 </body>
 </html>
